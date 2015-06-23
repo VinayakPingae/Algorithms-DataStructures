@@ -1,0 +1,78 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+#define MAX 99999
+
+int OptimalBST(int* p, int n);
+int FreqSum(int* p, int i, int j);
+
+int main(int argc,char* argv[])
+{
+ int i;
+ int totnum;
+ 
+ scanf("%d",&totnum);
+ int* p = (int *) malloc(sizeof(int *) * totnum);
+ for(i = 0; i < totnum; i++)
+ {
+	scanf("%d",&p[i]);
+ }
+
+ printf("\n%d\n",OptimalBST(p,totnum));
+ 
+ 
+ return 0;	
+}
+
+
+int OptimalBST(int* p, int n)
+{
+	
+		int i,j,k,l;
+		int totalCost;      
+		int optimalCost;
+		int** cost;	
+
+
+        cost=(int**)malloc(sizeof(int*) * n);
+        
+		for(i=0;i<n;i++)
+        {
+                cost[i]=(int*) malloc((n)*sizeof(int));
+        }
+		for(k = 1; k < n; k++){
+                for(j = 0; j < n - k; j++){
+                        optimalCost = MAX;
+                        for(l = j; l < j + k; l++)
+						{
+                                totalCost = (FreqSum(p, j, l) + cost[j][l]) + (FreqSum(p,l+1, j+k) + cost[l+1][j+k]);
+                                
+                                if(optimalCost > totalCost)
+								{
+                                        optimalCost = totalCost;
+                                }
+                        }
+                        
+						cost[j][j+k] = optimalCost;
+                }
+        }
+        
+	    for(i = 0; i < n; i++)
+        {
+                free(cost[i]);
+        }
+        free(cost);     
+		    
+	return optimalCost;
+}
+
+int FreqSum(int* p, int i, int j)
+{
+	int k = 0, sum = 0;
+
+	for(k = i; k <= j;k++)
+	{ 
+	sum += p[k];
+	}
+	return sum;
+}
